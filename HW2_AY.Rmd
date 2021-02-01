@@ -1,0 +1,107 @@
+---
+title: "HW2"
+author: "AYang"
+date: "1/27/2021"
+output: html_document
+---
+
+## 1. Import class one survey
+
+```{r}
+C1survey<-read_csv("https://raw.githubusercontent.com/kijohnson/ADA-FAll-2020/master/Class%20One/Class%201%20Survey%20Fall%202020.csv")
+```
+
+## 2. Determine: a. the number of observations (i.e. the number of people who filled out the survey) and b. the number of variables in the dataframe. 
+```{r}
+dim(C1survey)
+# There are 32 observations and 27 variables in the dataframe.
+```
+## 3. a. Rename the column variables to something shorter and that is descriptive of what the variable is about (for example like_dogs for the ‘Do you like dogs?’ question variable) and b. Display that they are renamed.
+```{r}
+varlist<-colnames(C1survey)
+varlist
+
+names(C1survey)[2:27]<-c("like_cats", "like_dogs", "oneitem", "slogan", "fav_day", "l_o_h", "fav_food", "fav_drink", "fav_season", "fav_month", "hobby", "program", "specialization", "software", "r_experience", "coding_comf", "coding_time", "hope_learn", "interest", "fav_number", "birth_day", "birth_month", "home_ountry", "home_state", "home_city", "edu_level")
+
+colnames(C1survey)
+# [1] "id"             "like_cats"      "like_dogs"      "oneitem"       
+# [5] "slogan"         "fav_day"        "l_o_h"          "fav_food"      
+# [9] "fav_drink"      "fav_season"     "fav_month"      "hobby"         
+#[13] "program"        "specialization" "software"       "r_experience"  
+#[17] "coding_comf"    "coding_time"    "hope_learn"     "interest"      
+#[21] "fav_number"     "birth_day"      "birth_month"    "home_ountry"   
+#[25] "home_state"     "home_city"      "edu_level"     
+```
+
+## 4. Write code to determine and display the number of factor, integer, numerical, and character variables there are in the C1survey dataset.
+```{r}
+table(sapply(C1survey,class))
+
+# The result shows there are 23 character variables and 4 numeric variables. 
+
+summary(C1survey)# I use summary function and checked the raw dataset, and found this is because R regarded some categorical variables as character variables. In addition, some students didn't response number on "birth day" and "birth month" questions so that these two variables were input as characters.
+```
+
+## 5. a. Using code, check the bday and bmonth variables for any unusual or missing values. If you find any, b. describe what you will do with the unusual values in a comment before or immediately following the code that does it, and c. after you have cleaned up any unusual values, find the median bday and month. *Note: please make sure that your bday and month variables are numeric before doing statistics
+```{r}
+C1survey$birth_day_n<-as.numeric(C1survey$birth_day)
+C1survey$birth_month_n<-as.numeric(C1survey$birth_month)
+summary(C1survey$birth_day_n)
+summary(C1survey$birth_month_n)
+# a. There are 1 missing values on birth_day and 4 missing value on birth_month.
+
+C1survey$birth_day[C1survey$birth_day == "26-Mar"]<-26
+C1survey$birth_month[C1survey$birth_month == "August"]<-8
+C1survey$birth_month[C1survey$birth_month == "March"]<-3
+C1survey$birth_month[C1survey$birth_month == "december"]<-12
+# b. Given this is a pretty small dataset, I will revise the missing value according to the raw dataset.
+
+C1survey$birth_day<-as.numeric(C1survey$birth_day)
+C1survey$birth_month<-as.numeric(C1survey$birth_month)
+median(C1survey$birth_day)
+median(C1survey$birth_month)
+# c. The median day is 18; the median month is 8 (There is no "NA" so no need to use "na.rm=T")
+
+```
+
+## 6. a. Create a new variable called bseason that gives the season according to Northern Meteorological season in which respondents were born (winter=12/1 to 2/29, spring=3/1 to 5/31, summer=6/1 to 8/31, fall=9/1 to 11/30). b. Using the table function, print a table of Seasons in the columns and bmonths in the rows that allows you to check that the coding is correct c. Sum the columns using the addmargins function to answer the question of how many classmates were born in each season? Include your answer in the code you turn in.
+```{r}
+# a.
+C1survey$bseason[C1survey$birth_month == 12]<-"winter"
+C1survey$bseason[C1survey$birth_month <= 2]<-"winter"
+C1survey$bseason[C1survey$birth_month>= 3 & C1survey$birth_month <= 5]<-"spring"
+C1survey$bseason[C1survey$birth_month>= 6 & C1survey$birth_month <= 8]<-"summer"
+C1survey$bseason[C1survey$birth_month>= 9 & C1survey$birth_month <= 11]<-"fall"
+
+table(C1survey$birth_month,C1survey$bseason)
+# b.  fall spring summer winter
+# 1     0      0      0      1
+# 3     0      3      0      0
+# 4     0      1      0      0
+# 5     0      3      0      0
+# 6     0      0      3      0
+# 7     0      0      2      0
+# 8     0      0      4      0
+# 9     4      0      0      0
+# 10    4      0      0      0
+# 11    2      0      0      0
+# 12    0      0      0      5
+
+A<-table(C1survey$birth_month,C1survey$bseason)
+addmargins(A)
+# c. There are 10 classmates born in fall, 7 in spring, 9 in summer, and 6 in winter
+```
+
+# 7. Pick your favorite variable to analyze, come up with a question you want to answer with that variable, generate the code, and provide an answer to your question. Describe what you did using comments (i.e. #’s).
+```{r}
+# I'd like to know if people with R experience felt more comfortable with coding.
+# Using variable "coding_comf" and "r_experience"
+
+C1survey$comf.f <- as.factor(C1survey$coding_comf)
+C1survey$r.f <- as.factor(C1survey$r_experience)
+x=rank(C1survey$r.f)
+y=rank(C1survey$comf.f)
+cor(x,y, method="spearman")
+# The correlation coefficient of 0.49 suggests a moderate positive correlation between the level of R experience and comfort with coding.
+
+```
