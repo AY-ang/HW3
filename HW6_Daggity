@@ -1,0 +1,36 @@
+dag {
+bb="-6.229,-4.362,5.43,4.726"
+"Bacterial Infections" [pos="3.976,-2.243"]
+"Food Intolerances/Sensitivities" [pos="-0.428,-3.185"]
+"Food allergies" [pos="-1.252,2.757"]
+"Gut-brain Axis" [pos="4.458,2.020"]
+"Irritable Bowel Syndrome" [outcome,pos="0.952,0.251"]
+"Small Intestinal Bacterial Overgrowth" [pos="-2.647,1.554"]
+"Stressful Early Life" [pos="3.149,-0.011"]
+Age [pos="-5.257,-0.645"]
+Anxiety [pos="0.338,1.693"]
+Depression [pos="1.239,-2.231"]
+Diet [exposure,pos="-1.826,-0.744"]
+Gender [pos="-3.696,-3.605"]
+Genetics [pos="1.186,3.969"]
+"Bacterial Infections" -> "Irritable Bowel Syndrome"
+"Food Intolerances/Sensitivities" -> "Irritable Bowel Syndrome"
+"Food Intolerances/Sensitivities" -> Diet
+"Food allergies" -> "Irritable Bowel Syndrome"
+"Food allergies" -> Diet
+"Gut-brain Axis" -> "Irritable Bowel Syndrome"
+"Small Intestinal Bacterial Overgrowth" -> "Irritable Bowel Syndrome"
+"Small Intestinal Bacterial Overgrowth" -> Diet
+"Stressful Early Life" -> "Irritable Bowel Syndrome"
+"Stressful Early Life" -> Anxiety
+"Stressful Early Life" -> Depression
+Age -> Diet
+Anxiety -> "Irritable Bowel Syndrome"
+Anxiety -> Diet
+Depression -> "Irritable Bowel Syndrome"
+Depression -> Diet
+Diet -> "Irritable Bowel Syndrome"
+Gender -> Diet
+Genetics -> "Food allergies"
+Genetics -> "Irritable Bowel Syndrome"
+}
